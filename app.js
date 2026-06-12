@@ -348,7 +348,7 @@ function update() {
   });
 
   const factors    = computeFactors(state);
-  const baseLE     = getBaseLE(state.age, state.sex);
+  const baseLE     = state.age + getBaseLE(state.age, state.sex);
   const totalDelta = factors.reduce((sum, f) => sum + f.impact, 0);
   const personalLE = Math.max(
     state.age + 1,
