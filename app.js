@@ -138,8 +138,8 @@ function renderSummary(personalLE, baseLE, totalDelta) {
   // Life expectancy
   const diff   = Math.round((personalLE - baseLE) * 10) / 10;
   const totalLE = Math.round((state.age + (personalLE - state.age)) * 10) / 10;
-  const leEl    = document.getElementById('le-val');
-  leEl.textContent = totalLE;
+  const leEl   = document.getElementById('le-val');
+  leEl.textContent = personalLE;
   leEl.className   = 'stat-value ' + (diff >= 0 ? 'good' : diff < -3 ? 'warn' : 'amber');
 
   // Health age
