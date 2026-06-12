@@ -5,21 +5,15 @@
 let chart = null;
 
 const state = {
-  age:           25,
-  sex:           'female',
-  height:        165,
-  weight:        62,
-  exercise:      3,
-  sleep:         7,
-  smoking:       'never',
-  alcohol:       2,
-  diet:          'average',
-  conditions:    ['none'],
-  familyHistory: 'no'
+  age:     25,
+  sex:     'female',
+  height:  165,
+  weight:  62,
+  smoking: 'never'
 };
 
 // ═════════════════════════════════════════════════════════════════
-//  LIFE TABLE HELPERS
+//  LIFE TABLE HELPER
 // ═════════════════════════════════════════════════════════════════
 
 function getBaseLE(age, sex) {
@@ -37,9 +31,9 @@ function getBaseLE(age, sex) {
 }
 
 // ═════════════════════════════════════════════════════════════════
-//  COMPUTE FACTORS — two parallel outputs
-//  rawFactors:   actual year impacts — for LE and health age
-//  scoreDelta:   reanchored points   — for lifestyle score only
+//  COMPUTE FACTORS
+//  rawFactors  → actual year impacts (LE, health age, bars)
+//  scoreDelta  → reanchored points (score display only)
 // ═════════════════════════════════════════════════════════════════
 
 function computeFactors(s) {
@@ -47,55 +41,25 @@ function computeFactors(s) {
   const rawFactors = [];
   let   scoreDelta = 0;
 
-  // ─ Smoking ──────────────────────────────────────────────────
+  // Smoking
   const smokingRaw = RISK_COEFFICIENTS_RAW.smoking(s.smoking);
-  rawFactors.push({ name: smokingRaw.label, key: 'Smoking', impact: smokingRaw.impact, color: smokingRaw.color });
+  rawFactors.push({
+    name:   smokingRaw.label,
+    key:    'Smoking',
+    impact: smokingRaw.impact,
+    color:  smokingRaw.color
+  });
   scoreDelta += RISK_COEFFICIENTS_SCORED.smoking(s.smoking);
 
-  // ─ BMI ──────────────────────────────────────────────────────
+  // BMI
   const bmiRaw = RISK_COEFFICIENTS_RAW.bmi(bmi);
-  rawFactors.push({ name: `${bmiRaw.label} (BMI ${Math.round(bmi * 10) / 10})`, key: 'BMI', impact: bmiRaw.impact, color: bmiRaw.color });
+  rawFactors.push({
+    name:   `${bmiRaw.label} (BMI ${Math.round(bmi * 10) / 10})`,
+    key:    'BMI',
+    impact: bmiRaw.impact,
+    color:  bmiRaw.color
+  });
   scoreDelta += RISK_COEFFICIENTS_SCORED.bmi(bmi);
-
-  // ─ Exercise ─────────────────────────────────────────────────
-  const exRaw = RISK_COEFFICIENTS_RAW.exercise(s.exercise);
-  rawFactors.push({ name: exRaw.label, key: 'Exercise', impact: exRaw.impact, color: exRaw.color });
-  scoreDelta += RISK_COEFFICIENTS_SCORED.exercise(s.exercise);
-
-  // ─ Sleep ────────────────────────────────────────────────────
-  const sleepRaw = RISK_COEFFICIENTS_RAW.sleep(s.sleep);
-  rawFactors.push({ name: sleepRaw.label, key: 'Sleep', impact: sleepRaw.impact, color: sleepRaw.color });
-  scoreDelta += RISK_COEFFICIENTS_SCORED.sleep(s.sleep);
-
-  // ─ Alcohol ──────────────────────────────────────────────────
-  const alcRaw = RISK_COEFFICIENTS_RAW.alcohol(s.alcohol);
-  rawFactors.push({ name: alcRaw.label, key: 'Alcohol', impact: alcRaw.impact, color: alcRaw.color });
-  scoreDelta += RISK_COEFFICIENTS_SCORED.alcohol(s.alcohol);
-
-  // ─ Diet ─────────────────────────────────────────────────────
-  const dietRaw = RISK_COEFFICIENTS_RAW.diet(s.diet);
-  rawFactors.push({ name: dietRaw.label, key: 'Diet', impact: dietRaw.impact, color: dietRaw.color });
-  scoreDelta += RISK_COEFFICIENTS_SCORED.diet(s.diet);
-
-  // ─ Conditions ───────────────────────────────────────────────
-  if (s.conditions.includes('none')) {
-    scoreDelta += RISK_COEFFICIENTS_SCORED.conditions.none;
-  } else {
-    s.conditions.forEach(c => {
-      if (RISK_COEFFICIENTS_RAW.conditions[c]) {
-        const r = RISK_COEFFICIENTS_RAW.conditions[c];
-        rawFactors.push({ name: r.label, key: r.label, impact: r.impact, color: r.color });
-        scoreDelta += RISK_COEFFICIENTS_SCORED.conditions[c];
-      }
-    });
-  }
-
-  // ─ Family history ────────────────────────────────────────────
-  const fhRaw = RISK_COEFFICIENTS_RAW.familyHistory[s.familyHistory];
-  if (fhRaw && fhRaw.impact !== 0) {
-    rawFactors.push({ name: fhRaw.label, key: 'Family history', impact: fhRaw.impact, color: fhRaw.color });
-  }
-  scoreDelta += RISK_COEFFICIENTS_SCORED.familyHistory[s.familyHistory];
 
   return { rawFactors, scoreDelta };
 }
@@ -105,13 +69,13 @@ function computeFactors(s) {
 // ═════════════════════════════════════════════════════════════════
 
 function renderSummary(personalLE, baseLE, totalRawDelta, scoreDelta) {
-  // Life expectancy — uses raw delta
+  // Life expectancy
   const diff = Math.round((personalLE - baseLE) * 10) / 10;
   const leEl = document.getElementById('le-val');
   leEl.textContent = personalLE;
   leEl.className   = 'stat-value ' + (diff >= 0 ? 'good' : diff < -3 ? 'warn' : 'amber');
 
-  // Health age — uses raw delta
+  // Health age
   const healthAge = Math.round((state.age - totalRawDelta) * 10) / 10;
   const ageDiff   = Math.round((healthAge - state.age) * 10) / 10;
   const haEl      = document.getElementById('health-age-val');
@@ -121,7 +85,7 @@ function renderSummary(personalLE, baseLE, totalRawDelta, scoreDelta) {
     ? `${Math.abs(ageDiff)} yrs younger than your age`
     : `${ageDiff} yrs older than your age`;
 
-  // Lifestyle score — uses scored delta only
+  // Lifestyle score
   const riskScore = Math.min(100, Math.max(10, Math.round(100 - (scoreDelta / MAX_SCORE_DELTA) * 90)));
   const rsEl      = document.getElementById('risk-score-val');
   rsEl.textContent = riskScore;
@@ -129,7 +93,7 @@ function renderSummary(personalLE, baseLE, totalRawDelta, scoreDelta) {
 }
 
 // ═════════════════════════════════════════════════════════════════
-//  RENDER — RISK FACTOR BARS (uses raw factors — actual years)
+//  RENDER — RISK BARS
 // ═════════════════════════════════════════════════════════════════
 
 function renderBars(rawFactors) {
@@ -151,22 +115,22 @@ function renderBars(rawFactors) {
       <div class="risk-bar-row">
         <span class="risk-factor-name">${f.name}</span>
         <div class="risk-bar-track">
-          <div class="risk-bar-fill ${barClass}" style="width: ${pct}%"></div>
+          <div class="risk-bar-fill ${barClass}" style="width:${pct}%"></div>
         </div>
         <span class="risk-impact ${textClass}">${sign}${f.impact} yrs</span>
       </div>`;
   }).join('');
 
-  // Insight box
+  // Insight
   const insightEl   = document.getElementById('top-insight');
   const worstFactor = rawFactors.reduce((a, b) => a.impact < b.impact ? a : b);
   const bestFactor  = rawFactors.reduce((a, b) => a.impact > b.impact ? a : b);
-  if (worstFactor.impact < -1) {
+  if (worstFactor.impact < 0) {
     insightEl.className   = 'insight-box warn-box';
     insightEl.textContent = `Your biggest risk factor is ${worstFactor.name.toLowerCase()}, costing an estimated ${Math.abs(worstFactor.impact)} years of life expectancy.`;
   } else {
     insightEl.className   = 'insight-box';
-    insightEl.textContent = `Your lifestyle profile is broadly positive. ${bestFactor.name} is your strongest asset, adding ${bestFactor.impact} years to your baseline.`;
+    insightEl.textContent = `Your lifestyle profile is positive. ${bestFactor.name} is your strongest asset, adding ${bestFactor.impact} years to your baseline.`;
   }
 }
 
@@ -178,10 +142,7 @@ function renderChart(personalLE, baseLE) {
   const delta     = personalLE - baseLE;
   const checkAges = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
   const saPopLE   = checkAges.map(a => Math.round(getBaseLE(a, state.sex) * 10) / 10);
-  const myLE      = checkAges.map(a => {
-    const base = getBaseLE(a, state.sex);
-    return Math.max(a + 1, Math.round((base + delta) * 10) / 10);
-  });
+  const myLE      = checkAges.map(a => Math.max(a + 1, Math.round((getBaseLE(a, state.sex) + delta) * 10) / 10));
 
   const ctx = document.getElementById('le-chart').getContext('2d');
   if (chart) chart.destroy();
@@ -242,26 +203,23 @@ function renderChart(personalLE, baseLE) {
 }
 
 // ═════════════════════════════════════════════════════════════════
-//  RENDER — RECOMMENDATIONS (uses raw factors — actual years)
+//  RENDER — RECOMMENDATIONS
 // ═════════════════════════════════════════════════════════════════
 
 function renderRecommendations(rawFactors) {
   const recEl      = document.getElementById('recommendations');
-  const negFactors = rawFactors
-    .filter(f => f.impact < 0)
-    .sort((a, b) => a.impact - b.impact)
-    .slice(0, 3);
+  const negFactors = rawFactors.filter(f => f.impact < 0).sort((a, b) => a.impact - b.impact);
 
   if (negFactors.length === 0) {
     recEl.innerHTML = `<p style="color:var(--accent);font-size:14px">
-      Your current lifestyle profile has no significant negative risk factors.
-      Focus on maintaining these habits — consistency is everything.
+      Your current profile has no negative risk factors for BMI and smoking.
+      Focus on maintaining these — consistency is everything.
     </p>`;
     return;
   }
 
   recEl.innerHTML = negFactors.map((f, i) => {
-    const recText = RECOMMENDATIONS[f.key] || 'Addressing this factor would improve your overall health score.';
+    const recText = RECOMMENDATIONS[f.key] || 'Addressing this factor would improve your score.';
     return `
       <div class="rec-item">
         <div class="rec-title">
@@ -278,7 +236,7 @@ function renderRecommendations(rawFactors) {
 // ═════════════════════════════════════════════════════════════════
 
 function update() {
-  ['age', 'height', 'weight', 'exercise', 'sleep', 'alcohol'].forEach(id => {
+  ['age', 'height', 'weight'].forEach(id => {
     state[id] = parseFloat(document.getElementById(id).value);
     document.getElementById(id + '-val').textContent = state[id];
   });
@@ -309,44 +267,6 @@ function setSmoking(val, btn) {
   state.smoking = val;
   btn.closest('.toggle-group').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  update();
-}
-
-function setDiet(val, btn) {
-  state.diet = val;
-  btn.closest('.toggle-group').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  update();
-}
-
-function setFamilyHistory(val, btn) {
-  state.familyHistory = val;
-  btn.closest('.toggle-group').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  update();
-}
-
-function toggleCondition(val, btn) {
-  const group = btn.closest('.toggle-group');
-  if (val === 'none') {
-    state.conditions = ['none'];
-    group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  } else {
-    state.conditions = state.conditions.filter(c => c !== 'none');
-    group.querySelector('[data-val="none"]').classList.remove('active');
-    if (state.conditions.includes(val)) {
-      state.conditions = state.conditions.filter(c => c !== val);
-      btn.classList.remove('active');
-    } else {
-      state.conditions.push(val);
-      btn.classList.add('active');
-    }
-    if (state.conditions.length === 0) {
-      state.conditions = ['none'];
-      group.querySelector('[data-val="none"]').classList.add('active');
-    }
-  }
   update();
 }
 
