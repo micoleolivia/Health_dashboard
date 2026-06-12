@@ -98,12 +98,14 @@ const RISK_COEFFICIENTS_RAW = {
   // HR: <16=1.36, 16-17.5=1.25, 17.5-18.5=1.10, 18.5-25=1.0 (ref),
   //     25-30=1.11, 30-35=1.44, 35+=1.88
   bmi: (bmiVal) => {
-    if (bmiVal < 18.5) return { impact: -3.8, color: 'warn',  label: 'Underweight' };
+    if (bmiVal < 16.0) return { impact: -3.8, color: 'warn',  label: 'Severely underweight' };
+    if (bmiVal < 17.5) return { impact: -2.0, color: 'warn',  label: 'Underweight' };
+    if (bmiVal < 18.5) return { impact: -0.5, color: 'amber', label: 'Slightly underweight' };
     if (bmiVal < 25)   return { impact:  0.0, color: 'good',  label: 'Healthy weight' };
     if (bmiVal < 30)   return { impact: -1.3, color: 'amber', label: 'Overweight' };
     if (bmiVal < 35)   return { impact: -4.5, color: 'warn',  label: 'Obese class I' };
                        return { impact: -7.7, color: 'warn',  label: 'Obese class II+' };
-  },
+  }
 };
 
 
@@ -124,12 +126,15 @@ const RISK_COEFFICIENTS_SCORED = {
   },
 
   bmi: (bmiVal) => {
-    if (bmiVal < 18.5) return { impact: -3.8, color: 'warn',  label: 'Underweight' };
-    if (bmiVal < 25)   return { impact:  0.0, color: 'good',  label: 'Healthy weight' };
-    if (bmiVal < 30)   return { impact: -1.3, color: 'amber', label: 'Overweight' };
-    if (bmiVal < 35)   return { impact: -4.5, color: 'warn',  label: 'Obese class I' };
-                       return { impact: -7.7, color: 'warn',  label: 'Obese class II+' };
-  },
+    if (bmiVal < 16.0) return  3.9;
+    if (bmiVal < 17.5) return  5.7;
+    if (bmiVal < 18.5) return  7.2;
+    if (bmiVal < 25)   return  7.7;
+    if (bmiVal < 30)   return  6.4;
+    if (bmiVal < 35)   return  3.2;
+                       return  0.0;
+  }
+};
 
 // Maximum possible scoreDelta (never smoker + healthy BMI)
 // 10.6 + 7.7 = 18.3
