@@ -1,0 +1,410 @@
+/* ═════════════════════════════════════════════════════════════════
+   style.css — Vitality Health Risk Dashboard
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ─── Design tokens ─────────────────────────────────────────────── */
+:root {
+  --bg:           #F7F6F2;
+  --surface:      #FFFFFF;
+  --border:       #E2DFD8;
+  --text:         #1A1915;
+  --text-muted:   #7A7870;
+  --text-hint:    #B0ADA6;
+
+  --accent:       #2D6A4F;
+  --accent-light: #D8EDDF;
+  --accent-mid:   #52B788;
+
+  --warn:         #B5451B;
+  --warn-light:   #FAE8E2;
+
+  --amber:        #92650A;
+  --amber-light:  #FEF0CC;
+
+  --font-display: 'Georgia', serif;
+  --font-body:    system-ui, -apple-system, sans-serif;
+
+  --radius:       12px;
+  --radius-sm:    8px;
+  --radius-pill:  20px;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ─── Header ────────────────────────────────────────────────────── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+header h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+header .subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ─── Layout ────────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: calc(100vh - 61px);
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────────── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.75rem;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin-bottom: 12px;
+}
+
+/* ─── Form fields ───────────────────────────────────────────────── */
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.field label .field-value {
+  font-weight: 500;
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* ─── Range sliders ─────────────────────────────────────────────── */
+input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Toggle buttons ────────────────────────────────────────────── */
+.toggle-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.toggle-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.toggle-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toggle-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* ─── Main content area ─────────────────────────────────────────── */
+.main {
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+}
+
+/* ─── Summary stat cards ────────────────────────────────────────── */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-family: var(--font-display);
+  font-weight: normal;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.stat-value.good   { color: var(--accent); }
+.stat-value.warn   { color: var(--warn); }
+.stat-value.amber  { color: var(--amber); }
+
+.stat-sub {
+  font-size: 12px;
+  color: var(--text-hint);
+  margin-top: 4px;
+}
+
+/* ─── Section titles ────────────────────────────────────────────── */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+/* ─── Content cards ─────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* ─── Risk factor bars ──────────────────────────────────────────── */
+.risk-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.risk-bar-row:last-child {
+  margin-bottom: 0;
+}
+
+.risk-factor-name {
+  font-size: 13px;
+  color: var(--text);
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.risk-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.risk-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.bar-good    { background: var(--accent-mid); }
+.bar-warn    { background: var(--warn); }
+.bar-amber   { background: #E9A820; }
+.bar-neutral { background: var(--text-hint); }
+
+.risk-impact {
+  font-size: 12px;
+  font-weight: 500;
+  width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.text-good    { color: var(--accent); }
+.text-warn    { color: var(--warn); }
+.text-amber   { color: var(--amber); }
+.text-neutral { color: var(--text-muted); }
+
+/* ─── Insight boxes ─────────────────────────────────────────────── */
+.insight-box {
+  background: var(--accent-light);
+  border: 1px solid #A8D5B8;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #1B4D35;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+.insight-box.warn-box {
+  background: var(--warn-light);
+  border-color: #F0B8A4;
+  color: #7A2D14;
+}
+
+/* ─── Chart container ───────────────────────────────────────────── */
+.chart-container {
+  position: relative;
+  height: 200px;
+}
+
+/* ─── Two column grid ───────────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ─── Recommendation items ──────────────────────────────────────── */
+.rec-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.rec-item:first-child {
+  padding-top: 0;
+}
+
+.rec-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rec-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.rec-impact {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--warn);
+  margin-left: 6px;
+}
+
+.rec-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ─── Footer note ───────────────────────────────────────────────── */
+.footer-note {
+  font-size: 11px;
+  color: var(--text-hint);
+  margin-top: 1.5rem;
+  line-height: 1.7;
+  padding-bottom: 2rem;
+}
+
+.footer-note strong {
+  color: var(--text-muted);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 1rem;
+  }
+
+  .main {
+    padding: 1rem;
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr;
+  }
+}
