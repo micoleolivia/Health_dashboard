@@ -139,8 +139,10 @@ const RISK_COEFFICIENTS = {
   // BMI — Di Angelantonio et al., Lancet 2016
   // HR: <18.5=1.36, 18.5-25=1.0 (ref), 25-30=1.11, 30-35=1.44, 35+=1.88
   bmi: (bmiVal) => {
-    if (bmiVal < 18.5) return { impact: -3.8, color: 'warn',    label: 'Underweight' };
-    if (bmiVal < 25)   return { impact:  0.0, color: 'good',    label: 'Healthy weight' };
+    if (bmiVal < 16.0) return { impact: -3.8, color: 'warn',    label: 'Severely underweight' };
+if (bmiVal < 17.5) return { impact: -2.0, color: 'warn',    label: 'Underweight' };
+if (bmiVal < 18.5) return { impact: -0.5, color: 'amber',   label: 'Slightly underweight' };
+if (bmiVal < 25)   return { impact:  0.0, color: 'good',    label: 'Healthy weight' };
     if (bmiVal < 30)   return { impact: -1.3, color: 'amber',   label: 'Overweight' };
     if (bmiVal < 35)   return { impact: -4.5, color: 'warn',    label: 'Obese class I' };
                        return { impact: -7.7, color: 'warn',    label: 'Obese class II+' };
