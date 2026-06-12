@@ -152,8 +152,10 @@ function renderSummary(personalLE, baseLE, totalDelta) {
     ? `${Math.abs(ageDiff)} yrs younger than your age`
     : `${ageDiff} yrs older than your age`;
 
-  // Risk score (0–100, lower = better)
-  const riskScore = Math.min(100, Math.max(0, Math.round(50 - totalDelta * 2)));
+ // Risk score (0–100, lower = better)
+  // Anchored: best possible delta ~+13 (all green) = score 10
+  // Worst possible delta ~-38 (all red) = score 100
+  const riskScore = Math.min(100, Math.max(0, Math.round(50 - (totalDelta / 13) * 40)));
   const rsEl      = document.getElementById('risk-score-val');
   rsEl.textContent = riskScore;
   rsEl.className   = 'stat-value ' + (riskScore < 40 ? 'good' : riskScore < 60 ? 'amber' : 'warn');
