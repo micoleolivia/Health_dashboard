@@ -155,7 +155,7 @@ function renderSummary(personalLE, baseLE, totalDelta) {
  // Risk score (0–100, lower = better)
   // Anchored: best possible delta ~+13 (all green) = score 10
   // Worst possible delta ~-38 (all red) = score 100
-  const riskScore = Math.min(100, Math.max(0, Math.round(50 - (totalDelta / 13) * 40)));
+  const riskScore = Math.min(100, Math.max(10, Math.round(100 - (totalDelta / MAX_TOTAL_DELTA) * 90)));
   const rsEl      = document.getElementById('risk-score-val');
   rsEl.textContent = riskScore;
   rsEl.className   = 'stat-value ' + (riskScore < 40 ? 'good' : riskScore < 60 ? 'amber' : 'warn');
